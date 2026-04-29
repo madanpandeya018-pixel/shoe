@@ -3,19 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mero Domestic Shoes - Mega Store</title>
+<title>Mero Domestic Shoes</title>
 
 <style>
 body {margin:0;font-family:Arial;background:#f4f4f4}
 
-/* NAVBAR */
+/* NAV */
 nav {
     background:#111;color:white;
     display:flex;justify-content:space-between;
     padding:15px;
 }
-nav ul {display:flex;list-style:none}
-nav ul li {margin:0 10px;cursor:pointer}
 
 /* HERO */
 .hero {
@@ -24,43 +22,56 @@ nav ul li {margin:0 10px;cursor:pointer}
 }
 
 /* SEARCH */
-.search {
-    text-align:center;padding:20px;
-}
-.search input {
-    padding:10px;width:60%;
-}
+.search {text-align:center;padding:20px;}
+.search input {padding:10px;width:60%;}
 
 /* PRODUCTS */
 .products {
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-    padding:20px;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;padding:20px;
 }
+
 .card {
-    background:white;padding:10px;
-    border-radius:10px;
+    background:white;padding:10px;border-radius:10px;
 }
+
 .card img {
-    width:100%;height:180px;object-fit:cover;
+    width:100%;height:200px;object-fit:cover;
 }
+
 button {
-    background:#ff6600;color:white;
-    border:none;padding:8px;cursor:pointer;
+    background:#ff6600;color:white;border:none;
+    padding:8px;margin-top:5px;cursor:pointer;
+}
+
+/* RATING */
+.stars span {
+    font-size:20px;
+    cursor:pointer;
+    color:gray;
+}
+.stars .active {
+    color:gold;
+}
+
+/* COMMENTS */
+.comment-box {
+    margin-top:10px;
+}
+.comment-box input {
+    width:100%;padding:5px;
+}
+.comment-list {
+    font-size:12px;margin-top:5px;
 }
 
 /* CART */
 .cart {
     position:fixed;right:0;top:0;
-    width:300px;height:100%;
-    background:white;border-left:2px solid #ddd;
-    padding:10px;overflow:auto;
-}
-
-/* FORM */
-.form {
-    padding:20px;background:white;margin:20px;
+    width:250px;height:100%;
+    background:white;padding:10px;
+    overflow:auto;border-left:2px solid #ddd;
 }
 
 /* FOOTER */
@@ -73,96 +84,119 @@ footer {
 
 <body>
 
-<!-- NAVBAR -->
 <nav>
 <h2>👟 Mero Shoes</h2>
-<ul>
-<li>Home</li>
-<li>Products</li>
-<li>Contact</li>
-</ul>
+<div>Cart 🛒</div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-<h1>नेपालकै सबैभन्दा ठुलो जुत्ता पसल</h1>
-<p>Stylish | Comfortable | Affordable</p>
+<h1>Best Shoes Collection</h1>
 </div>
 
-<!-- SEARCH -->
 <div class="search">
-<input type="text" id="searchBox" placeholder="Search shoes...">
+<input id="searchBox" placeholder="Search shoes...">
 </div>
 
-<!-- PRODUCTS -->
-<div class="products" id="productList"></div>
+<div class="products" id="products"></div>
 
-<!-- CART -->
 <div class="cart">
-<h3>🛒 Cart</h3>
+<h3>Cart</h3>
 <ul id="cartItems"></ul>
 </div>
 
-<!-- ORDER FORM -->
-<div class="form">
-<h2>Order Form</h2>
-<input placeholder="Full Name"><br><br>
-<input placeholder="Phone Number"><br><br>
-<input placeholder="Address"><br><br>
-<button>Place Order</button>
-</div>
-
-<!-- FOOTER -->
 <footer>
-<p>© 2026 Mero Domestic Shoes Nepal</p>
+<p>© 2026 Mero Domestic Shoes</p>
 </footer>
 
 <script>
-// PRODUCT DATA (AUTO GENERATE 100+ ITEMS)
-const shoes = [];
 
-for(let i=1;i<=100;i++){
+// DIFFERENT IMAGES
+const images = [
+"https://images.unsplash.com/photo-1528701800489-20be3c76a96a",
+"https://images.unsplash.com/photo-1519741497674-611481863552",
+"https://images.unsplash.com/photo-1600180758890-6b94519a8ba6",
+"https://images.unsplash.com/photo-1584735175097-719d848f8449",
+"https://images.unsplash.com/photo-1560769629-975ec94e6a86"
+];
+
+// PRODUCTS
+const shoes = [];
+for(let i=1;i<=20;i++){
     shoes.push({
-        name: "Shoe Model " + i,
-        price: 2000 + i*50,
-        image: "https://images.unsplash.com/photo-1528701800489-20be3c76a96a"
+        name:"Shoe Model "+i,
+        price:2000+i*100,
+        image:images[i % images.length],
+        rating:0,
+        comments:[]
     });
 }
 
-const productList = document.getElementById("productList");
-const cartItems = document.getElementById("cartItems");
+const container = document.getElementById("products");
+const cart = document.getElementById("cartItems");
 
-// DISPLAY PRODUCTS
-function displayProducts(list){
-    productList.innerHTML="";
-    list.forEach((shoe,index)=>{
-        productList.innerHTML += `
+// DISPLAY
+function display(list){
+    container.innerHTML="";
+    list.forEach((s,i)=>{
+        container.innerHTML += `
         <div class="card">
-            <img src="${shoe.image}">
-            <h3>${shoe.name}</h3>
-            <p>Rs ${shoe.price}</p>
-            <button onclick="addToCart(${index})">Add to Cart</button>
+            <img src="${s.image}">
+            <h3>${s.name}</h3>
+            <p>Rs ${s.price}</p>
+
+            <div class="stars" id="stars-${i}">
+                ${[1,2,3,4,5].map(n=>`<span onclick="rate(${i},${n})">★</span>`).join("")}
+            </div>
+
+            <button onclick="addCart(${i})">Add to Cart</button>
+
+            <div class="comment-box">
+                <input placeholder="Write feedback..." onkeypress="addComment(event,${i})">
+                <div class="comment-list" id="comments-${i}"></div>
+            </div>
         </div>`;
     });
 }
 
-// CART FUNCTION
-function addToCart(index){
-    const item = shoes[index];
-    const li = document.createElement("li");
-    li.innerText = item.name + " - Rs " + item.price;
-    cartItems.appendChild(li);
+// CART
+function addCart(i){
+    let li=document.createElement("li");
+    li.innerText=shoes[i].name+" Rs "+shoes[i].price;
+    cart.appendChild(li);
+}
+
+// RATING
+function rate(i,stars){
+    shoes[i].rating=stars;
+    let starDiv=document.getElementById("stars-"+i).children;
+    for(let j=0;j<5;j++){
+        starDiv[j].classList.toggle("active", j<stars);
+    }
+}
+
+// COMMENTS
+function addComment(e,i){
+    if(e.key==="Enter"){
+        shoes[i].comments.push(e.target.value);
+        e.target.value="";
+        updateComments(i);
+    }
+}
+
+function updateComments(i){
+    let div=document.getElementById("comments-"+i);
+    div.innerHTML=shoes[i].comments.map(c=>"<p>"+c+"</p>").join("");
 }
 
 // SEARCH
 document.getElementById("searchBox").addEventListener("keyup",function(){
-    const value = this.value.toLowerCase();
-    const filtered = shoes.filter(s=>s.name.toLowerCase().includes(value));
-    displayProducts(filtered);
+    let val=this.value.toLowerCase();
+    display(shoes.filter(s=>s.name.toLowerCase().includes(val)));
 });
 
-// INITIAL LOAD
-displayProducts(shoes);
+// INIT
+display(shoes);
+
 </script>
 
 </body>
