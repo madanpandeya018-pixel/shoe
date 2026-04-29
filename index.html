@@ -1,1 +1,169 @@
-shoe
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mero Domestic Shoes - Mega Store</title>
+
+<style>
+body {margin:0;font-family:Arial;background:#f4f4f4}
+
+/* NAVBAR */
+nav {
+    background:#111;color:white;
+    display:flex;justify-content:space-between;
+    padding:15px;
+}
+nav ul {display:flex;list-style:none}
+nav ul li {margin:0 10px;cursor:pointer}
+
+/* HERO */
+.hero {
+    background:url('https://images.unsplash.com/photo-1542291026-7eec264c27ff') center/cover;
+    color:white;text-align:center;padding:80px;
+}
+
+/* SEARCH */
+.search {
+    text-align:center;padding:20px;
+}
+.search input {
+    padding:10px;width:60%;
+}
+
+/* PRODUCTS */
+.products {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
+}
+.card {
+    background:white;padding:10px;
+    border-radius:10px;
+}
+.card img {
+    width:100%;height:180px;object-fit:cover;
+}
+button {
+    background:#ff6600;color:white;
+    border:none;padding:8px;cursor:pointer;
+}
+
+/* CART */
+.cart {
+    position:fixed;right:0;top:0;
+    width:300px;height:100%;
+    background:white;border-left:2px solid #ddd;
+    padding:10px;overflow:auto;
+}
+
+/* FORM */
+.form {
+    padding:20px;background:white;margin:20px;
+}
+
+/* FOOTER */
+footer {
+    background:black;color:white;
+    text-align:center;padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+<h2>👟 Mero Shoes</h2>
+<ul>
+<li>Home</li>
+<li>Products</li>
+<li>Contact</li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+<h1>नेपालकै सबैभन्दा ठुलो जुत्ता पसल</h1>
+<p>Stylish | Comfortable | Affordable</p>
+</div>
+
+<!-- SEARCH -->
+<div class="search">
+<input type="text" id="searchBox" placeholder="Search shoes...">
+</div>
+
+<!-- PRODUCTS -->
+<div class="products" id="productList"></div>
+
+<!-- CART -->
+<div class="cart">
+<h3>🛒 Cart</h3>
+<ul id="cartItems"></ul>
+</div>
+
+<!-- ORDER FORM -->
+<div class="form">
+<h2>Order Form</h2>
+<input placeholder="Full Name"><br><br>
+<input placeholder="Phone Number"><br><br>
+<input placeholder="Address"><br><br>
+<button>Place Order</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+<p>© 2026 Mero Domestic Shoes Nepal</p>
+</footer>
+
+<script>
+// PRODUCT DATA (AUTO GENERATE 100+ ITEMS)
+const shoes = [];
+
+for(let i=1;i<=100;i++){
+    shoes.push({
+        name: "Shoe Model " + i,
+        price: 2000 + i*50,
+        image: "https://images.unsplash.com/photo-1528701800489-20be3c76a96a"
+    });
+}
+
+const productList = document.getElementById("productList");
+const cartItems = document.getElementById("cartItems");
+
+// DISPLAY PRODUCTS
+function displayProducts(list){
+    productList.innerHTML="";
+    list.forEach((shoe,index)=>{
+        productList.innerHTML += `
+        <div class="card">
+            <img src="${shoe.image}">
+            <h3>${shoe.name}</h3>
+            <p>Rs ${shoe.price}</p>
+            <button onclick="addToCart(${index})">Add to Cart</button>
+        </div>`;
+    });
+}
+
+// CART FUNCTION
+function addToCart(index){
+    const item = shoes[index];
+    const li = document.createElement("li");
+    li.innerText = item.name + " - Rs " + item.price;
+    cartItems.appendChild(li);
+}
+
+// SEARCH
+document.getElementById("searchBox").addEventListener("keyup",function(){
+    const value = this.value.toLowerCase();
+    const filtered = shoes.filter(s=>s.name.toLowerCase().includes(value));
+    displayProducts(filtered);
+});
+
+// INITIAL LOAD
+displayProducts(shoes);
+</script>
+
+</body>
+</html>
